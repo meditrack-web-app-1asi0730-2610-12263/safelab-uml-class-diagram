@@ -1,0 +1,91 @@
+﻿@startuml
+title SafeLab - User Profiles Class Diagram
+
+class UserProfile {
+  - Guid id
+  - Guid userId
+  - string firstName
+  - string lastName
+  - string phoneNumber
+  - string jobTitle
+  - ProfileStatus status
+  - DateTime updatedAt
+  + updateContactInfo(phoneNumber: string)
+  + updateJobTitle(jobTitle: string)
+  + deactivate()
+}
+
+class OrganizationProfile {
+  - Guid id
+  - string name
+  - OrganizationType type
+  - string taxIdentifier
+  - string address
+  + updateAddress(address: string)
+  + updateOrganizationInfo(name: string)
+}
+
+class Preference {
+  - Guid id
+  - Language language
+  - ThemeMode theme
+  - TimeZoneInfo timeZone
+  + changeLanguage(language: Language)
+  + changeTheme(theme: ThemeMode)
+}
+
+class NotificationPreference {
+  - Guid id
+  - bool emailEnabled
+  - bool smsEnabled
+  - bool pushEnabled
+  - AlertPriority minimumPriority
+  + enableEmail()
+  + enableSms()
+  + enablePush()
+  + setMinimumPriority(priority: AlertPriority)
+}
+
+class ContactInfo {
+  - string email
+  - string phoneNumber
+  - string emergencyContact
+  + updateEmail(email: string)
+  + updatePhone(phoneNumber: string)
+}
+
+enum ProfileStatus {
+  Active
+  Inactive
+  Pending
+}
+
+enum OrganizationType {
+  HospitalLaboratory
+  PharmaceuticalCompany
+}
+
+enum Language {
+  English
+  Spanish
+}
+
+enum ThemeMode {
+  Light
+  Dark
+  System
+}
+
+enum AlertPriority {
+  Low
+  Medium
+  High
+  Critical
+}
+
+UserProfile "1" -- "1" ContactInfo
+UserProfile "1" -- "1" Preference
+Preference "1" -- "1" NotificationPreference
+OrganizationProfile "1" -- "0..*" UserProfile
+
+@enduml

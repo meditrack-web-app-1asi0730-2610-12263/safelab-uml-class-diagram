@@ -1,0 +1,102 @@
+﻿@startuml
+title SafeLab - Incident Management Class Diagram
+
+class Incident {
+  - Guid id
+  - string title
+  - string description
+  - IncidentSeverity severity
+  - IncidentStatus status
+  - DateTime reportedAt
+  + assignTo(userId: Guid)
+  + markInProgress()
+  + close()
+  + escalate()
+}
+
+class IncidentAssignment {
+  - Guid id
+  - Guid assignedUserId
+  - DateTime assignedAt
+  - AssignmentStatus status
+  + accept()
+  + reject()
+  + reassign(userId: Guid)
+}
+
+class CorrectiveAction {
+  - Guid id
+  - string description
+  - DateTime registeredAt
+  - ActionStatus status
+  + complete()
+  + cancel()
+}
+
+class ResolutionRecord {
+  - Guid id
+  - string summary
+  - DateTime resolvedAt
+  - ResolutionStatus status
+  + approve()
+  + reject()
+}
+
+class IncidentEvidence {
+  - Guid id
+  - string evidenceUrl
+  - EvidenceType type
+  - DateTime uploadedAt
+  + attach()
+  + remove()
+}
+
+enum IncidentSeverity {
+  Low
+  Medium
+  High
+  Critical
+}
+
+enum IncidentStatus {
+  Open
+  InProgress
+  Resolved
+  Closed
+  Escalated
+}
+
+enum AssignmentStatus {
+  Pending
+  Accepted
+  Rejected
+  Reassigned
+}
+
+enum ActionStatus {
+  Pending
+  Completed
+  Cancelled
+}
+
+enum ResolutionStatus {
+  PendingReview
+  Approved
+  Rejected
+}
+
+enum EvidenceType {
+  Image
+  Report
+  SensorReading
+  ManualRecord
+}
+
+Incident "1" -- "0..*" IncidentAssignment
+Incident "1" -- "0..*" CorrectiveAction
+Incident "1" -- "0..1" ResolutionRecord
+Incident "1" -- "0..*" IncidentEvidence
+CorrectiveAction "1" -- "0..*" IncidentEvidence
+ResolutionRecord "1" -- "0..*" IncidentEvidence
+
+@enduml

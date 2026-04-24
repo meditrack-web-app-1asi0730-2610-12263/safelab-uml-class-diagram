@@ -1,0 +1,105 @@
+﻿@startuml
+title SafeLab - Reports & Analytics Class Diagram
+
+class Report {
+  - Guid id
+  - string title
+  - ReportType type
+  - ReportStatus status
+  - DateTime generatedAt
+  + generate()
+  + archive()
+}
+
+class ReportTemplate {
+  - Guid id
+  - string name
+  - string description
+  - TemplateStatus status
+  + activate()
+  + deactivate()
+  + updateDescription(description: string)
+}
+
+class AnalyticsMetric {
+  - Guid id
+  - string name
+  - decimal value
+  - string unit
+  - MetricStatus status
+  + updateValue(value: decimal)
+  + markAsCritical()
+}
+
+class TrendAnalysis {
+  - Guid id
+  - DateTime startDate
+  - DateTime endDate
+  - TrendDirection direction
+  - string summary
+  + calculate()
+  + updateSummary(summary: string)
+}
+
+class ExportFile {
+  - Guid id
+  - string fileName
+  - ExportFormat format
+  - ExportStatus status
+  - DateTime exportedAt
+  + export()
+  + markAsDownloaded()
+}
+
+enum ReportType {
+  Operational
+  Compliance
+  SensorHistory
+  IncidentSummary
+  Inventory
+}
+
+enum ReportStatus {
+  Draft
+  Generated
+  Archived
+}
+
+enum TemplateStatus {
+  Active
+  Inactive
+}
+
+enum MetricStatus {
+  Normal
+  Warning
+  Critical
+}
+
+enum TrendDirection {
+  Increasing
+  Decreasing
+  Stable
+  Variable
+}
+
+enum ExportFormat {
+  PDF
+  Excel
+  CSV
+}
+
+enum ExportStatus {
+  Pending
+  Exported
+  Downloaded
+  Failed
+}
+
+ReportTemplate "1" -- "0..*" Report
+Report "1" -- "0..*" AnalyticsMetric
+Report "1" -- "0..*" TrendAnalysis
+Report "1" -- "0..*" ExportFile
+TrendAnalysis "1" -- "0..*" AnalyticsMetric
+
+@enduml

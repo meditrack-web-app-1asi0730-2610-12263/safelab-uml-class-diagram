@@ -1,0 +1,80 @@
+﻿@startuml
+title SafeLab - Audit & Traceability Class Diagram
+
+class AuditLog {
+  - Guid id
+  - Guid userId
+  - string action
+  - string entityName
+  - Guid entityId
+  - DateTime occurredAt
+  - AuditSeverity severity
+  + register()
+  + markAsReviewed()
+}
+
+class ActivityEvent {
+  - Guid id
+  - string description
+  - ActivityType type
+  - DateTime createdAt
+  + record()
+}
+
+class TraceabilityRecord {
+  - Guid id
+  - string entityName
+  - Guid entityId
+  - string description
+  - DateTime recordedAt
+  + addRecord()
+}
+
+class ChangeRecord {
+  - Guid id
+  - string fieldName
+  - string oldValue
+  - string newValue
+  - DateTime changedAt
+  + registerChange()
+}
+
+class TraceabilityTimeline {
+  - Guid id
+  - string targetEntity
+  - Guid targetEntityId
+  - DateTime generatedAt
+  + generate()
+}
+
+enum AuditSeverity {
+  Info
+  Warning
+  Critical
+}
+
+enum ActivityType {
+  Login
+  Logout
+  ProfileUpdate
+  SensorUpdate
+  AlertAcknowledgement
+  IncidentClosure
+  RemoteCommand
+}
+
+enum TraceabilityType {
+  Asset
+  Sensor
+  Incident
+  Report
+  Command
+}
+
+AuditLog "1" -- "0..*" ActivityEvent
+AuditLog "1" -- "0..*" ChangeRecord
+TraceabilityTimeline "1" -- "0..*" TraceabilityRecord
+TraceabilityRecord "1" -- "0..*" ChangeRecord
+ActivityEvent "1" -- "0..*" TraceabilityRecord
+
+@enduml
