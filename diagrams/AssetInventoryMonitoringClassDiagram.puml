@@ -1,0 +1,104 @@
+﻿@startuml
+title SafeLab - Asset & Inventory Monitoring Class Diagram
+
+class Asset {
+  - Guid id
+  - string code
+  - string name
+  - AssetType type
+  - AssetStatus status
+  - string location
+  - DateTime registeredAt
+  + activate()
+  + deactivate()
+  + relocate(location: string)
+}
+
+class Equipment {
+  - Guid id
+  - string serialNumber
+  - string manufacturer
+  - DateTime installedAt
+  - MaintenanceStatus maintenanceStatus
+  + scheduleMaintenance()
+  + markAsOutOfService()
+}
+
+class InventoryItem {
+  - Guid id
+  - string sku
+  - string name
+  - int quantity
+  - int minimumStock
+  - InventoryStatus status
+  + addStock(quantity: int)
+  + consumeStock(quantity: int)
+  + isLowStock(): bool
+}
+
+class StockMovement {
+  - Guid id
+  - int quantity
+  - MovementType type
+  - DateTime movedAt
+  - string reason
+  + register()
+}
+
+class StorageUnit {
+  - Guid id
+  - string code
+  - string name
+  - string location
+  - StorageStatus status
+  + enable()
+  + disable()
+}
+
+enum AssetType {
+  Refrigerator
+  Freezer
+  Incubator
+  SensorHub
+  StorageCabinet
+}
+
+enum AssetStatus {
+  Active
+  Inactive
+  OutOfService
+}
+
+enum MaintenanceStatus {
+  Pending
+  Scheduled
+  Completed
+  Overdue
+}
+
+enum InventoryStatus {
+  Available
+  LowStock
+  OutOfStock
+  Expired
+}
+
+enum MovementType {
+  Entry
+  Exit
+  Adjustment
+}
+
+enum StorageStatus {
+  Active
+  Inactive
+}
+
+Asset <|-- Equipment
+Asset <|-- StorageUnit
+
+StorageUnit "1" -- "0..*" InventoryItem
+InventoryItem "1" -- "0..*" StockMovement
+Equipment "1" -- "0..*" InventoryItem
+
+@enduml

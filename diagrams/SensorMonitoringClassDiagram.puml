@@ -1,0 +1,100 @@
+﻿@startuml
+title SafeLab - Sensor Monitoring Class Diagram
+
+class Sensor {
+  - Guid id
+  - string code
+  - string name
+  - SensorType type
+  - SensorStatus status
+  - DateTime installedAt
+  + activate()
+  + deactivate()
+  + markAsDisconnected()
+}
+
+class SensorReading {
+  - Guid id
+  - decimal value
+  - string unit
+  - DateTime recordedAt
+  - ReadingStatus status
+  + markAsNormal()
+  + markAsOutOfRange()
+}
+
+class ThresholdRule {
+  - Guid id
+  - decimal minValue
+  - decimal maxValue
+  - string unit
+  - ThresholdStatus status
+  + validate(value: decimal): bool
+  + activate()
+  + deactivate()
+}
+
+class TelemetryBatch {
+  - Guid id
+  - DateTime receivedAt
+  - int readingCount
+  - BatchStatus status
+  + process()
+  + reject()
+}
+
+class SensorCalibration {
+  - Guid id
+  - DateTime calibratedAt
+  - DateTime nextCalibrationAt
+  - string performedBy
+  - CalibrationStatus status
+  + markAsCompleted()
+  + markAsOverdue()
+}
+
+enum SensorType {
+  Temperature
+  Humidity
+  DoorStatus
+  Vibration
+  Energy
+}
+
+enum SensorStatus {
+  Active
+  Inactive
+  Disconnected
+  Maintenance
+}
+
+enum ReadingStatus {
+  Normal
+  OutOfRange
+  Invalid
+}
+
+enum ThresholdStatus {
+  Active
+  Inactive
+}
+
+enum BatchStatus {
+  Received
+  Processed
+  Rejected
+}
+
+enum CalibrationStatus {
+  Pending
+  Completed
+  Overdue
+}
+
+Sensor "1" -- "0..*" SensorReading
+Sensor "1" -- "0..*" ThresholdRule
+Sensor "1" -- "0..*" SensorCalibration
+TelemetryBatch "1" -- "1..*" SensorReading
+ThresholdRule "1" -- "0..*" SensorReading
+
+@enduml

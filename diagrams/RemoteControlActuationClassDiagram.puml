@@ -1,0 +1,99 @@
+﻿@startuml
+title SafeLab - Remote Control & Actuation Class Diagram
+
+class RemoteCommand {
+  - Guid id
+  - string commandName
+  - string payload
+  - CommandStatus status
+  - DateTime requestedAt
+  + approve()
+  + reject()
+  + markAsExecuted()
+  + markAsFailed()
+}
+
+class Actuator {
+  - Guid id
+  - string code
+  - string name
+  - ActuatorType type
+  - ActuatorStatus status
+  + activate()
+  + deactivate()
+  + execute(command: RemoteCommand)
+}
+
+class CommandExecution {
+  - Guid id
+  - DateTime executedAt
+  - ExecutionResult result
+  - string responseMessage
+  + markAsSuccessful()
+  + markAsFailed(reason: string)
+}
+
+class SafetyRule {
+  - Guid id
+  - string name
+  - string description
+  - SafetyRuleStatus status
+  + validate(command: RemoteCommand): bool
+  + activate()
+  + deactivate()
+}
+
+class DeviceControlPolicy {
+  - Guid id
+  - string name
+  - ControlPolicyStatus status
+  + allowCommand(commandName: string)
+  + blockCommand(commandName: string)
+}
+
+enum CommandStatus {
+  Pending
+  Approved
+  Rejected
+  Executed
+  Failed
+}
+
+enum ActuatorType {
+  RefrigeratorControl
+  AlarmControl
+  DoorLock
+  Ventilation
+  PowerSwitch
+}
+
+enum ActuatorStatus {
+  Active
+  Inactive
+  Unavailable
+  Maintenance
+}
+
+enum ExecutionResult {
+  Successful
+  Failed
+  Timeout
+}
+
+enum SafetyRuleStatus {
+  Active
+  Inactive
+}
+
+enum ControlPolicyStatus {
+  Active
+  Inactive
+}
+
+Actuator "1" -- "0..*" RemoteCommand
+RemoteCommand "1" -- "0..*" CommandExecution
+RemoteCommand "1" -- "0..*" SafetyRule
+DeviceControlPolicy "1" -- "0..*" RemoteCommand
+Actuator "1" -- "0..*" CommandExecution
+
+@enduml

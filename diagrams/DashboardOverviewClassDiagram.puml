@@ -1,0 +1,81 @@
+﻿@startuml
+title SafeLab - Dashboard & Overview Class Diagram
+
+class Dashboard {
+  - Guid id
+  - Guid userId
+  - string name
+  - DateTime createdAt
+  + refresh()
+  + addWidget(widget: DashboardWidget)
+  + removeWidget(widgetId: Guid)
+}
+
+class DashboardWidget {
+  - Guid id
+  - string title
+  - WidgetType type
+  - int position
+  - WidgetStatus status
+  + activate()
+  + deactivate()
+  + updatePosition(position: int)
+}
+
+class OverviewSummary {
+  - Guid id
+  - int activeAlerts
+  - int criticalIncidents
+  - int monitoredAssets
+  - int connectedSensors
+  - DateTime generatedAt
+  + refreshSummary()
+}
+
+class KPI {
+  - Guid id
+  - string name
+  - decimal value
+  - string unit
+  - KPIStatus status
+  + updateValue(value: decimal)
+  + markAsCritical()
+}
+
+class DashboardFilter {
+  - Guid id
+  - DateTime startDate
+  - DateTime endDate
+  - string location
+  - string assetType
+  + apply()
+  + reset()
+}
+
+enum WidgetType {
+  Alerts
+  Sensors
+  Assets
+  Incidents
+  Compliance
+  Reports
+}
+
+enum WidgetStatus {
+  Active
+  Inactive
+}
+
+enum KPIStatus {
+  Normal
+  Warning
+  Critical
+}
+
+Dashboard "1" -- "0..*" DashboardWidget
+Dashboard "1" -- "1" OverviewSummary
+Dashboard "1" -- "0..*" KPI
+Dashboard "1" -- "0..1" DashboardFilter
+DashboardWidget "1" -- "0..*" KPI
+
+@enduml
