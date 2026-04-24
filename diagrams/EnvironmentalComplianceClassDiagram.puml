@@ -1,0 +1,105 @@
+﻿@startuml
+title SafeLab - Environmental Compliance Class Diagram
+
+class ComplianceRule {
+  - Guid id
+  - string name
+  - string description
+  - ComplianceRuleType type
+  - ComplianceRuleStatus status
+  + activate()
+  + deactivate()
+  + updateDescription(description: string)
+}
+
+class StorageCondition {
+  - Guid id
+  - decimal temperature
+  - decimal humidity
+  - DateTime recordedAt
+  - ConditionStatus status
+  + markAsCompliant()
+  + markAsNonCompliant()
+}
+
+class ComplianceEvaluation {
+  - Guid id
+  - DateTime evaluatedAt
+  - EvaluationResult result
+  - string notes
+  + approve()
+  + reject()
+  + addNotes(notes: string)
+}
+
+class Violation {
+  - Guid id
+  - string description
+  - ViolationSeverity severity
+  - DateTime detectedAt
+  - ViolationStatus status
+  + markAsResolved()
+  + escalate()
+}
+
+class ComplianceEvidence {
+  - Guid id
+  - string evidenceUrl
+  - EvidenceType type
+  - DateTime createdAt
+  + attach()
+  + remove()
+}
+
+enum ComplianceRuleType {
+  TemperatureRange
+  HumidityRange
+  StoragePolicy
+  EquipmentCondition
+}
+
+enum ComplianceRuleStatus {
+  Active
+  Inactive
+}
+
+enum ConditionStatus {
+  Compliant
+  NonCompliant
+  Pending
+}
+
+enum EvaluationResult {
+  Passed
+  Failed
+  Warning
+}
+
+enum ViolationSeverity {
+  Low
+  Medium
+  High
+  Critical
+}
+
+enum ViolationStatus {
+  Open
+  InReview
+  Resolved
+  Escalated
+}
+
+enum EvidenceType {
+  SensorReading
+  Report
+  ManualRecord
+  Image
+}
+
+ComplianceRule "1" -- "0..*" ComplianceEvaluation
+StorageCondition "1" -- "0..*" ComplianceEvaluation
+ComplianceEvaluation "1" -- "0..*" Violation
+ComplianceEvaluation "1" -- "0..*" ComplianceEvidence
+Violation "1" -- "0..*" ComplianceEvidence
+
+@enduml
