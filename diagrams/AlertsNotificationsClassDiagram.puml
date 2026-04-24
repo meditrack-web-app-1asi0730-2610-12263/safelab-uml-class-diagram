@@ -1,0 +1,93 @@
+﻿@startuml
+title SafeLab - Alerts & Notifications Class Diagram
+
+class Alert {
+  - Guid id
+  - string title
+  - string description
+  - AlertSeverity severity
+  - AlertStatus status
+  - DateTime createdAt
+  + acknowledge()
+  + resolve()
+  + escalate()
+}
+
+class Notification {
+  - Guid id
+  - string message
+  - NotificationChannel channel
+  - NotificationStatus status
+  - DateTime sentAt
+  + send()
+  + markAsDelivered()
+  + markAsFailed()
+}
+
+class Recipient {
+  - Guid id
+  - Guid userId
+  - string fullName
+  - string email
+  - string phone
+  + updateContact()
+}
+
+class DeliveryRule {
+  - Guid id
+  - AlertSeverity minimumSeverity
+  - NotificationChannel channel
+  - bool active
+  + enable()
+  + disable()
+}
+
+class EscalationPolicy {
+  - Guid id
+  - int delayMinutes
+  - int maxAttempts
+  - PolicyStatus status
+  + activate()
+  + deactivate()
+}
+
+enum AlertSeverity {
+  Low
+  Medium
+  High
+  Critical
+}
+
+enum AlertStatus {
+  Open
+  Acknowledged
+  Resolved
+  Escalated
+}
+
+enum NotificationChannel {
+  Email
+  SMS
+  Push
+  WhatsApp
+}
+
+enum NotificationStatus {
+  Pending
+  Sent
+  Delivered
+  Failed
+}
+
+enum PolicyStatus {
+  Active
+  Inactive
+}
+
+Alert "1" -- "0..*" Notification
+Recipient "1" -- "0..*" Notification
+Alert "1" -- "0..*" DeliveryRule
+Alert "1" -- "0..1" EscalationPolicy
+DeliveryRule "1" -- "0..*" Recipient
+
+@enduml
